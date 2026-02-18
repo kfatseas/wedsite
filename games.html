@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Games — Jessica & Costas Wedding</title>
+  <meta name="description" content="Play our wedding games! Kythera Wordle, wedding trivia, and more.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💍</text></svg>">
+
+  <style>
+    /* ===== GAMES PAGE STYLES ===== */
+    .games-hero {
+      padding: 160px 20px 80px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(10,20,10,0.95) 0%, var(--color-bg) 100%);
+    }
+
+    .games-hero .section-pretitle { color: var(--color-accent); }
+    .games-hero h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      color: var(--color-accent-light);
+      margin: 10px 0 20px;
+      line-height: 1.1;
+    }
+    .games-hero p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      color: var(--color-text-muted);
+      max-width: 500px;
+      margin: 0 auto;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== GAME SECTION TABS ===== */
+    .game-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+    .game-tab {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 12px 28px;
+      border: 1px solid rgba(201,169,110,0.4);
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.25s;
+      border-radius: 2px;
+    }
+    .game-tab:hover,
+    .game-tab.active {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #fff;
+    }
+
+    /* ===== GAME PANELS ===== */
+    .game-panel { display: none; }
+    .game-panel.active { display: block; }
+
+    /* ===== WORDLE ===== */
+    #wordle-section {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .wordle-title {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .wordle-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--color-accent-light);
+    }
+    .wordle-subtitle {
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 30px;
+    }
+
+    .wordle-grid {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 6px;
+      margin: 0 auto 28px;
+      max-width: 330px;
+    }
+    .wordle-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .wordle-tile {
+      aspect-ratio: 1;
+      border: 2px solid rgba(201,169,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      background: transparent;
+      text-transform: uppercase;
+      transition: border-color 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .wordle-tile.filled { border-color: var(--color-accent); animation: tilePopIn 0.1s ease; }
+    .wordle-tile.correct { background: #3a6b3a; border-color: #3a6b3a; color: #fff; }
+    .wordle-tile.present { background: #b5860d; border-color: #b5860d; color: #fff; }
+    .wordle-tile.absent  { background: #333; border-color: #333; color: #888; }
+    .wordle-tile.flip    { animation: tileFlip 0.5s ease forwards; }
+
+    @keyframes tilePopIn {
+      0%   { transform: scale(0.85); }
+      100% { transform: scale(1); }
+    }
+    @keyframes tileFlip {
+      0%   { transform: rotateX(0); }
+      50%  { transform: rotateX(-90deg); }
+      100% { transform: rotateX(0); }
+    }
+    @keyframes tileShake {
+      0%,100% { transform: translateX(0); }
+      20%,60% { transform: translateX(-6px); }
+      40%,80% { transform: translateX(6px); }
+    }
+    .wordle-row.shake .wordle-tile { animation: tileShake 0.4s ease; }
+
+    .wordle-keyboard {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .wordle-keyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+    .wordle-key {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      min-width: 34px;
+      height: 54px;
+      padding: 0 6px;
+      border: none;
+      border-radius: 4px;
+      background: rgba(201,169,110,0.15);
+      color: var(--color-accent-light);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      user-select: none;
+    }
+    .wordle-key.wide { min-width: 54px; font-size: 0.65rem; }
+    .wordle-key:hover { background: rgba(201,169,110,0.3); }
+    .wordle-key.correct { background: #3a6b3a; color: #fff; }
+    .wordle-key.present { background: #b5860d; color: #fff; }
+    .wordle-key.absent  { background: #272727; color: #555; }
+
+    .wordle-message {
+      text-align: center;
+      min-height: 32px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      color: var(--color-accent);
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+    .wordle-hint {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--color-text-muted);
+      margin-bottom: 20px;
+      min-height: 24px;
+    }
+    .wordle-new-btn {
+      display: block;
+      margin: 18px auto 0;
+      padding: 12px 32px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .wordle-new-btn:hover { background: var(--color-accent); color: #fff; }
+
+    /* ===== TRIVIA ===== */
+    #trivia-section {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .trivia-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .trivia-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--color-accent-light);
+    }
+    .trivia-subtitle {
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+
+    .trivia-progress-bar {
+      height: 3px;
+      background: rgba(201,169,110,0.15);
+      border-radius: 2px;
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+    .trivia-progress-fill {
+      height: 100%;
+      background: var(--color-accent);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+
+    .trivia-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,169,110,0.18);
+      border-radius: 4px;
+      padding: 40px 36px;
+      margin-bottom: 24px;
+    }
+    .trivia-q-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 16px;
+    }
+    .trivia-question {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      line-height: 1.5;
+      color: var(--color-text-light);
+      margin-bottom: 30px;
+    }
+    .trivia-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 500px) {
+      .trivia-options { grid-template-columns: 1fr; }
+    }
+    .trivia-option {
+      padding: 14px 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(201,169,110,0.25);
+      background: transparent;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      border-radius: 3px;
+      line-height: 1.4;
+    }
+    .trivia-option:hover:not(:disabled) {
+      border-color: var(--color-accent);
+      color: var(--color-accent-light);
+      background: rgba(201,169,110,0.07);
+    }
+    .trivia-option.correct {
+      border-color: #3a6b3a;
+      background: rgba(58,107,58,0.25);
+      color: #7fba7f;
+    }
+    .trivia-option.wrong {
+      border-color: #8b3a3a;
+      background: rgba(139,58,58,0.2);
+      color: #c07f7f;
+    }
+    .trivia-option:disabled { cursor: default; }
+
+    .trivia-feedback {
+      margin-top: 20px;
+      min-height: 28px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--color-accent);
+      text-align: center;
+    }
+
+    .trivia-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .trivia-score-badge {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+    .trivia-next-btn {
+      padding: 12px 32px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .trivia-next-btn.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .trivia-next-btn:hover { background: var(--color-accent); color: #fff; }
+
+    .trivia-result {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .trivia-result-emoji { font-size: 4rem; margin-bottom: 20px; }
+    .trivia-result h3 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3rem;
+      color: var(--color-accent-light);
+      margin-bottom: 16px;
+    }
+    .trivia-result p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-bottom: 30px;
+    }
+    .trivia-result .score-big {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 8px;
+    }
+    .trivia-restart-btn {
+      padding: 14px 38px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .trivia-restart-btn:hover { background: var(--color-accent); color: #fff; }
+
+    /* ===== SCRAMBLE ===== */
+    #scramble-section {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+    .scramble-title {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .scramble-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--color-accent-light);
+    }
+    .scramble-subtitle {
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+    .scramble-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,169,110,0.18);
+      border-radius: 4px;
+      padding: 40px 36px;
+      text-align: center;
+    }
+    .scramble-category {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 14px;
+    }
+    .scramble-clue {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--color-text-muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .scramble-letters {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .scramble-letter {
+      width: 46px;
+      height: 54px;
+      border: 2px solid rgba(201,169,110,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      text-transform: uppercase;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .scramble-letter:hover:not(.used) {
+      background: rgba(201,169,110,0.15);
+      border-color: var(--color-accent);
+    }
+    .scramble-letter.used {
+      opacity: 0.2;
+      cursor: default;
+    }
+    .scramble-answer-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      min-height: 60px;
+    }
+    .scramble-answer-slot {
+      width: 46px;
+      height: 54px;
+      border-bottom: 2px solid rgba(201,169,110,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--color-accent-light);
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .scramble-answer-slot:hover { color: var(--color-accent); }
+    .scramble-controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .scramble-btn {
+      padding: 11px 24px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scramble-btn-check {
+      background: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      color: #fff;
+    }
+    .scramble-btn-check:hover { background: var(--color-accent-dark); }
+    .scramble-btn-clear {
+      background: transparent;
+      border: 1px solid rgba(201,169,110,0.35);
+      color: var(--color-text-muted);
+    }
+    .scramble-btn-clear:hover { border-color: var(--color-accent); color: var(--color-accent); }
+    .scramble-feedback {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      min-height: 30px;
+      color: var(--color-accent);
+      margin-bottom: 8px;
+    }
+    .scramble-feedback.wrong { color: #c07f7f; }
+    .scramble-counter {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+    }
+    .scramble-next-btn {
+      display: none;
+      margin: 18px auto 0;
+      padding: 12px 32px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: transparent;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+    .scramble-next-btn.visible { display: block; }
+    .scramble-next-btn:hover { background: var(--color-accent); color: #fff; }
+
+    .scramble-done {
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .scramble-done h3 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      color: var(--color-accent-light);
+      margin-bottom: 14px;
+    }
+    .scramble-done p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* ===== RING TOSS GAME ===== */
+    #panel-ringtoss {
+      padding-bottom: 80px;
+    }
+    .ringtoss-wrap {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .ringtoss-title {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .ringtoss-title h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--color-accent-light);
+    }
+    .ringtoss-subtitle {
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    #ringtoss-canvas {
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid rgba(201,169,110,0.2);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .ringtoss-ui {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 700px;
+      margin: 16px auto 0;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 0 2px;
+    }
+    .ringtoss-info {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .ringtoss-info span {
+      color: var(--color-accent-light);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    #ringtoss-launch-btn {
+      padding: 13px 40px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 700;
+      background: var(--color-accent);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.15s;
+      animation: launchPulse 1s ease-in-out infinite;
+    }
+    #ringtoss-launch-btn:hover { background: var(--color-accent-dark); transform: scale(1.04); }
+    #ringtoss-launch-btn:disabled { opacity: 0.4; animation: none; cursor: default; }
+    @keyframes launchPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(201,169,110,0.5); }
+      50% { box-shadow: 0 0 0 10px rgba(201,169,110,0); }
+    }
+    .ringtoss-howto {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      margin-top: 14px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Loader -->
+  <div class="page-loader">
+    <div class="loader-text">Let's Play</div>
+    <div class="loader-bar">
+      <div class="loader-bar-inner"></div>
+    </div>
+  </div>
+
+  <!-- Page Transition -->
+  <div class="page-transition"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Forever & Always</a>
+    <div class="nav-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="kythera.html">Kythera</a></li>
+      <li><a href="travel.html">Travel</a></li>
+      <li><a href="index.html#details">Details</a></li>
+      <li><a href="games.html" class="active">Games</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="games-hero">
+    <p class="section-pretitle">Play Along</p>
+    <h1>Wedding Games</h1>
+    <p>Wordle, trivia, scrambles — all Kythera & love-themed. Challenge yourself before the big day.</p>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="game-tabs">
+    <button class="game-tab active" data-tab="wordle">🟩 Kythera Wordle</button>
+    <button class="game-tab" data-tab="trivia">💡 Wedding Trivia</button>
+    <button class="game-tab" data-tab="scramble">🔀 Word Scramble</button>
+    <button class="game-tab" data-tab="ringtoss">💍 Ring Toss</button>
+  </div>
+
+  <!-- ===== WORDLE PANEL ===== -->
+  <div class="game-panel active" id="panel-wordle">
+    <div id="wordle-section">
+      <div class="wordle-title"><h2>Kythera Wordle</h2></div>
+      <p class="wordle-subtitle">Guess the 5-letter word — wedding & Greece themed · 6 tries</p>
+      <div class="wordle-hint" id="wordle-hint">💡 Today's hint will appear here after 3 wrong guesses</div>
+      <div class="wordle-message" id="wordle-message"></div>
+      <div class="wordle-grid" id="wordle-grid"></div>
+      <div class="wordle-keyboard" id="wordle-keyboard"></div>
+      <button class="wordle-new-btn" id="wordle-new-btn" style="display:none;">Next Word →</button>
+    </div>
+  </div>
+
+  <!-- ===== TRIVIA PANEL ===== -->
+  <div class="game-panel" id="panel-trivia">
+    <div id="trivia-section">
+      <div class="trivia-title"><h2>Wedding Trivia</h2></div>
+      <p class="trivia-subtitle">10 questions about Greece, Kythera & love</p>
+      <div class="trivia-progress-bar">
+        <div class="trivia-progress-fill" id="trivia-progress" style="width:0%"></div>
+      </div>
+      <div id="trivia-container">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCRAMBLE PANEL ===== -->
+  <div class="game-panel" id="panel-scramble">
+    <div id="scramble-section">
+      <div class="scramble-title"><h2>Word Scramble</h2></div>
+      <p class="scramble-subtitle">Unscramble the wedding & Greece words</p>
+      <div class="scramble-card" id="scramble-card">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RING TOSS PANEL ===== -->
+  <div class="game-panel" id="panel-ringtoss">
+    <div class="ringtoss-wrap">
+      <div class="ringtoss-title"><h2>🦝 Raccoon Ring Toss</h2></div>
+      <p class="ringtoss-subtitle">Watch the arrow — click or press Space to catapult the ring!</p>
+      <canvas id="ringtoss-canvas" width="700" height="420"></canvas>
+      <div class="ringtoss-ui">
+        <div class="ringtoss-info">Shots <span id="rt-round">0</span> / 10</div>
+        <button id="ringtoss-launch-btn">🚀 Launch! (Space)</button>
+        <div class="ringtoss-info">Hits <span id="rt-score">0</span></div>
+      </div>
+      <p class="ringtoss-howto">Watch the arrow swing and launch at the right moment — how many rings can you land? 10 shots!</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-names">Jessica & Costas</div>
+      <p class="footer-date">September 4, 2027 · Kythera, Greece</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="kythera.html">Kythera</a>
+        <a href="travel.html">Travel</a>
+        <a href="index.html#details">Details</a>
+        <a href="games.html">Games</a>
+      </div>
+      <p class="footer-bottom">Made with 💕 and a little help from our
+        <span class="footer-raccoon raccoon-hidden" title="🦝 Footer raccoon!">🦝</span> friends
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+  (() => {
+    // =========================================================
+    //  TAB SWITCHING
+    // =========================================================
+    document.querySelectorAll('.game-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.game-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.game-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === 'ringtoss') startRingToss();
+        else stopRingToss();
+      });
+    });
+
+    // =========================================================
+    //  WORDLE
+    // =========================================================
+    const WORD_LIST = [
+      { word: 'AGAPE', hint: 'Unconditional love — a Greek word you might know 💛' },
+      { word: 'BRIDE', hint: 'She\'ll be walking down the aisle in September ✨' },
+      { word: 'GREEK', hint: 'The language of gods and romance 🇬🇷' },
+      { word: 'OLIVE', hint: 'A sacred tree of Greece, symbol of peace 🫒' },
+      { word: 'DANCE', hint: 'You will do plenty of this at the reception 💃' },
+      { word: 'BLISS', hint: 'The feeling of perfect happiness 🌸' },
+      { word: 'HEART', hint: 'The symbol of everything this day is about 💙' },
+      { word: 'HONEY', hint: 'Sweet — like the newlyweds 🍯' },
+      { word: 'ROSES', hint: 'The classic symbol of romance 🌹' },
+      { word: 'SHORE', hint: 'Kythera is surrounded by this 🌊' },
+      { word: 'ELOPE', hint: 'To run away together — though we\'re going big! 😄' },
+      { word: 'LEMON', hint: 'A fragrant staple of the Greek landscape 🍋' },
+      { word: 'TIARA', hint: 'A bridal crown fit for a goddess 👑' },
+      { word: 'VOWED', hint: 'Promises made from the heart 🤍' },
+      { word: 'FEAST', hint: 'Epic post-ceremony dining, Greek style 🍽️' },
+      { word: 'AEGEA', hint: 'The sea that hugs Kythera 🏖️' },
+      { word: 'CHOIR', hint: 'Beautiful voices, beautiful ceremony 🎶' },
+      { word: 'PEARL', hint: 'Found in the sea — precious and rare 🦪' },
+    ];
+
+    // Pick a deterministic daily word
+    const today = new Date();
+    const dayIndex = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+    let currentWordIndex = dayIndex % WORD_LIST.length;
+    let currentEntry = WORD_LIST[currentWordIndex];
+    let targetWord = currentEntry.word;
+
+    const MAX_GUESSES = 6;
+    const WORD_LENGTH = 5;
+    let currentRow = 0;
+    let currentCol = 0;
+    let currentGuess = [];
+    let gameOver = false;
+    let wrongGuesses = 0;
+    let board = [];
+    let keyStates = {};
+
+    function initWordle() {
+      targetWord = currentEntry.word;
+      currentRow = 0; currentCol = 0;
+      currentGuess = []; gameOver = false;
+      wrongGuesses = 0; board = []; keyStates = {};
+      document.getElementById('wordle-message').textContent = '';
+      document.getElementById('wordle-hint').textContent = '💡 Hint unlocks after 3 wrong guesses';
+      document.getElementById('wordle-new-btn').style.display = 'none';
+      buildGrid(); buildKeyboard();
+    }
+
+    function buildGrid() {
+      const grid = document.getElementById('wordle-grid');
+      grid.innerHTML = '';
+      board = [];
+      for (let r = 0; r < MAX_GUESSES; r++) {
+        const row = document.createElement('div');
+        row.className = 'wordle-row';
+        const rowTiles = [];
+        for (let c = 0; c < WORD_LENGTH; c++) {
+          const tile = document.createElement('div');
+          tile.className = 'wordle-tile';
+          row.appendChild(tile);
+          rowTiles.push(tile);
+        }
+        grid.appendChild(row);
+        board.push(rowTiles);
+      }
+    }
+
+    function buildKeyboard() {
+      const rows = [['Q','W','E','R','T','Y','U','I','O','P'],['A','S','D','F','G','H','J','K','L'],['ENTER','Z','X','C','V','B','N','M','⌫']];
+      const kb = document.getElementById('wordle-keyboard');
+      kb.innerHTML = '';
+      rows.forEach(keys => {
+        const row = document.createElement('div');
+        row.className = 'wordle-keyboard-row';
+        keys.forEach(k => {
+          const btn = document.createElement('button');
+          btn.className = 'wordle-key' + (k.length > 1 ? ' wide' : '');
+          btn.textContent = k;
+          btn.dataset.key = k;
+          btn.addEventListener('click', () => handleKey(k));
+          row.appendChild(btn);
+        });
+        kb.appendChild(row);
+      });
+    }
+
+    function handleKey(key) {
+      if (gameOver) return;
+      if (key === '⌫' || key === 'BACKSPACE') {
+        if (currentCol > 0) {
+          currentCol--;
+          currentGuess.pop();
+          board[currentRow][currentCol].textContent = '';
+          board[currentRow][currentCol].classList.remove('filled');
+        }
+      } else if (key === 'ENTER') {
+        submitGuess();
+      } else if (/^[A-Z]$/.test(key) && currentCol < WORD_LENGTH) {
+        board[currentRow][currentCol].textContent = key;
+        board[currentRow][currentCol].classList.add('filled');
+        currentGuess.push(key);
+        currentCol++;
+      }
+    }
+
+    function submitGuess() {
+      if (currentCol < WORD_LENGTH) {
+        shakeRow(currentRow);
+        showMessage('Not enough letters');
+        return;
+      }
+      const guess = currentGuess.join('');
+      revealGuess(guess);
+    }
+
+    function revealGuess(guess) {
+      const result = getResult(guess, targetWord);
+      const flipDelay = 350;
+      result.forEach((state, i) => {
+        const tile = board[currentRow][i];
+        setTimeout(() => {
+          tile.classList.add('flip');
+          setTimeout(() => tile.classList.add(state), flipDelay / 2);
+          updateKeyState(currentGuess[i], state);
+        }, i * flipDelay);
+      });
+      const totalDelay = WORD_LENGTH * flipDelay;
+      setTimeout(() => {
+        if (guess === targetWord) {
+          const msgs = ['Opa! 🎉', 'Τέλειο! 🌟', 'Bravo! 🥂', 'Exactly right! 💛', 'Magnificent! 👑', 'You got it! ✨'];
+          showMessage(msgs[Math.min(currentRow, msgs.length - 1)]);
+          gameOver = true;
+          document.getElementById('wordle-new-btn').style.display = 'block';
+        } else {
+          wrongGuesses++;
+          if (wrongGuesses >= 3) {
+            document.getElementById('wordle-hint').textContent = currentEntry.hint;
+          }
+          currentRow++;
+          currentCol = 0;
+          currentGuess = [];
+          if (currentRow >= MAX_GUESSES) {
+            showMessage('The word was ' + targetWord);
+            gameOver = true;
+            document.getElementById('wordle-new-btn').style.display = 'block';
+          }
+        }
+      }, totalDelay);
+    }
+
+    function getResult(guess, target) {
+      const result = Array(WORD_LENGTH).fill('absent');
+      const targetArr = target.split('');
+      const guessArr = guess.split('');
+      const targetCount = {};
+      // Mark correct first
+      guessArr.forEach((l, i) => {
+        if (l === targetArr[i]) { result[i] = 'correct'; targetArr[i] = null; }
+      });
+      // Mark present
+      guessArr.forEach((l, i) => {
+        if (result[i] === 'correct') return;
+        const idx = targetArr.indexOf(l);
+        if (idx !== -1) { result[i] = 'present'; targetArr[idx] = null; }
+      });
+      return result;
+    }
+
+    function updateKeyState(letter, state) {
+      const priority = { correct: 3, present: 2, absent: 1 };
+      if ((priority[state] || 0) > (priority[keyStates[letter]] || 0)) {
+        keyStates[letter] = state;
+        document.querySelectorAll(`.wordle-key[data-key="${letter}"]`).forEach(k => {
+          k.classList.remove('correct', 'present', 'absent');
+          k.classList.add(state);
+        });
+      }
+    }
+
+    function shakeRow(row) {
+      const rowEl = document.getElementById('wordle-grid').children[row];
+      rowEl.classList.add('shake');
+      rowEl.addEventListener('animationend', () => rowEl.classList.remove('shake'), { once: true });
+    }
+
+    function showMessage(msg) {
+      const el = document.getElementById('wordle-message');
+      el.textContent = msg;
+    }
+
+    document.getElementById('wordle-new-btn').addEventListener('click', () => {
+      currentWordIndex = (currentWordIndex + 1) % WORD_LIST.length;
+      currentEntry = WORD_LIST[currentWordIndex];
+      initWordle();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (document.getElementById('panel-wordle').classList.contains('active')) {
+        const key = e.key.toUpperCase();
+        if (key === 'BACKSPACE') handleKey('⌫');
+        else if (key === 'ENTER') handleKey('ENTER');
+        else if (/^[A-Z]$/.test(key)) handleKey(key);
+      }
+    });
+
+    initWordle();
+
+    // =========================================================
+    //  TRIVIA
+    // =========================================================
+    const TRIVIA = [
+      { q: 'Which goddess of love was said to be born from the sea near Kythera?', options: ['Hera', 'Athena', 'Aphrodite', 'Persephone'], answer: 2, fun: 'Aphrodite rose from the sea-foam near Kythera — making it the island of love. 🌊' },
+      { q: 'What is "I love you" in Greek?', options: ['Σε θέλω', 'Σ\'αγαπώ', 'Καλημέρα', 'Ευχαριστώ'], answer: 1, fun: '"Σ\'αγαπώ" (S\'agapo) — say it and watch a Greek melt. 💛' },
+      { q: 'Approximately how long is the direct flight from Athens to Kythera?', options: ['15 minutes', '40 minutes', '1.5 hours', '3 hours'], answer: 1, fun: 'Just 40 minutes from Athens — paradise is closer than you think! ✈️' },
+      { q: 'The Greek Nobel Prize poet Odysseas Elytis was born on which island?', options: ['Crete', 'Kythera', 'Lesbos', 'Rhodes'], answer: 2, fun: 'Elytis was born in Heraklion, Crete — but his soul lived in the Aegean. 🌊' },
+      { q: 'What year were Jessica & Costas getting married?', options: ['2025', '2026', '2027', '2028'], answer: 2, fun: 'September 4, 2027 — mark your calendars! 💍' },
+      { q: 'The traditional Greek wedding dance where guests put money on the couple is called?', options: ['Sirtaki', 'Zembekiko', 'Kalamatiano', 'Tsifteteli'], answer: 0, fun: 'Sirtaki is the one to watch for — and join! Opa! 🕺' },
+      { q: 'In Greek, what does "Kythera" (Κύθηρα) traditionally symbolise?', options: ['The sea', 'Love & beauty', 'Courage', 'The harvest'], answer: 1, fun: 'Kythera is synonymous with Aphrodite and the birthplace of love. 💕' },
+      { q: 'Which sea directly surrounds Kythera?', options: ['Adriatic Sea', 'Ionian Sea', 'Mediterranean Sea', 'Aegean Sea'], answer: 1, fun: 'Kythera sits where the Ionian and Aegean seas meet — doubly romantic! 🌊' },
+      { q: 'What does the Greek word "agapi" (αγάπη) mean?', options: ['Happiness', 'Forever', 'Love', 'Unity'], answer: 2, fun: 'Agapi — the deepest, unconditional kind of love. The best kind. 💙' },
+      { q: 'What month is the wedding?', options: ['July', 'August', 'September', 'October'], answer: 2, fun: 'September 4th, 2027 — still warm, the summer crowds gone. Perfect. 🌅' },
+    ];
+
+    let triviaIndex = 0, triviaScore = 0, triviaAnswered = false;
+
+    function renderTrivia() {
+      const container = document.getElementById('trivia-container');
+      if (triviaIndex >= TRIVIA.length) {
+        renderTriviaResult(container); return;
+      }
+      const q = TRIVIA[triviaIndex];
+      triviaAnswered = false;
+      document.getElementById('trivia-progress').style.width = (triviaIndex / TRIVIA.length * 100) + '%';
+      container.innerHTML = `
+        <div class="trivia-card">
+          <div class="trivia-q-number">Question ${triviaIndex + 1} of ${TRIVIA.length}</div>
+          <div class="trivia-question">${q.q}</div>
+          <div class="trivia-options">
+            ${q.options.map((o, i) => `<button class="trivia-option" data-idx="${i}">${o}</button>`).join('')}
+          </div>
+          <div class="trivia-feedback" id="trivia-feedback"></div>
+        </div>
+        <div class="trivia-nav">
+          <div class="trivia-score-badge">Score: ${triviaScore} / ${triviaIndex}</div>
+          <button class="trivia-next-btn" id="trivia-next">${triviaIndex === TRIVIA.length - 1 ? 'See Results →' : 'Next →'}</button>
+        </div>`;
+      container.querySelectorAll('.trivia-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (triviaAnswered) return;
+          triviaAnswered = true;
+          const chosen = parseInt(btn.dataset.idx);
+          container.querySelectorAll('.trivia-option').forEach(b => b.disabled = true);
+          if (chosen === q.answer) {
+            btn.classList.add('correct');
+            triviaScore++;
+            document.getElementById('trivia-feedback').textContent = '✓ Correct! ' + q.fun;
+          } else {
+            btn.classList.add('wrong');
+            container.querySelectorAll('.trivia-option')[q.answer].classList.add('correct');
+            document.getElementById('trivia-feedback').textContent = '✗ Not quite. ' + q.fun;
+          }
+          document.getElementById('trivia-next').classList.add('visible');
+        });
+      });
+      document.getElementById('trivia-next').addEventListener('click', () => {
+        triviaIndex++;
+        renderTrivia();
+      });
+    }
+
+    function renderTriviaResult(container) {
+      document.getElementById('trivia-progress').style.width = '100%';
+      const pct = Math.round(triviaScore / TRIVIA.length * 100);
+      let emoji, msg;
+      if (pct === 100) { emoji = '🏆'; msg = 'Perfect score! You\'re basically an honorary Greek.'; }
+      else if (pct >= 70) { emoji = '🎉'; msg = 'Impressive! You clearly love love — and Greece.'; }
+      else if (pct >= 40) { emoji = '💛'; msg = 'Not bad! Kythera will teach you the rest.'; }
+      else { emoji = '🌊'; msg = 'The island awaits to fill in the gaps!'; }
+      container.innerHTML = `
+        <div class="trivia-result">
+          <div class="trivia-result-emoji">${emoji}</div>
+          <h3>Well played!</h3>
+          <span class="score-big">${triviaScore} / ${TRIVIA.length}</span>
+          <p>${msg}</p>
+          <button class="trivia-restart-btn" id="trivia-restart">Play Again</button>
+        </div>`;
+      document.getElementById('trivia-restart').addEventListener('click', () => {
+        triviaIndex = 0; triviaScore = 0;
+        renderTrivia();
+      });
+    }
+
+    renderTrivia();
+
+    // =========================================================
+    //  WORD SCRAMBLE
+    // =========================================================
+    const SCRAMBLE_WORDS = [
+      { word: 'KYTHERA',    category: 'The Island',       clue: 'The mythical island of Aphrodite, where it all happens 🌊' },
+      { word: 'APHRODITE',  category: 'Greek Mythology',  clue: 'The goddess of love — Kythera is her birthplace 🌹' },
+      { word: 'CEREMONY',   category: 'The Big Day',      clue: 'The sacred ritual that makes it official 💍' },
+      { word: 'RECEPTION',  category: 'The Big Day',      clue: 'Dinner, dancing, and celebration under the stars 🥂' },
+      { word: 'SIRTAKI',    category: 'Greek Culture',    clue: 'The famous Greek group dance — get ready to link arms 🕺' },
+      { word: 'AEGEAN',     category: 'Geography',        clue: 'The ancient sea kissing Kythera\'s shores 🌊' },
+      { word: 'HONEYMOON',  category: 'The Big Day',      clue: 'The romantic escape after the wedding 🌙' },
+      { word: 'WEDDING',    category: 'The Big Day',      clue: 'The whole reason you\'re on this website! 💕' },
+      { word: 'JESSICA',    category: 'The Couple',       clue: 'The radiant bride 👰' },
+      { word: 'COSTAS',     category: 'The Couple',       clue: 'The handsome groom 🤵' },
+      { word: 'OLIVE',      category: 'Greece',           clue: 'A sacred tree, a flavour, a symbol of peace 🫒' },
+      { word: 'ELYTIS',     category: 'Greek Poetry',     clue: 'The Nobel Prize-winning Greek poet of the Aegean ✍️' },
+    ];
+
+    let scrambleIndex = 0;
+    let scrambleCorrect = 0;
+    let selectedIndices = [];
+    let shuffledLetters = [];
+
+    function shuffleArray(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderScramble() {
+      const card = document.getElementById('scramble-card');
+      if (scrambleIndex >= SCRAMBLE_WORDS.length) {
+        card.innerHTML = `<div class="scramble-done">
+          <h3>All done!</h3>
+          <p>You unscrambled ${scrambleCorrect} out of ${SCRAMBLE_WORDS.length} words. ${scrambleCorrect === SCRAMBLE_WORDS.length ? '🏆 Perfect!' : '💛 Great effort!'}</p>
+          <button class="scramble-next-btn visible" id="scramble-restart">Play Again</button>
+        </div>`;
+        document.getElementById('scramble-restart').addEventListener('click', () => {
+          scrambleIndex = 0; scrambleCorrect = 0; renderScramble();
+        });
+        return;
+      }
+      const entry = SCRAMBLE_WORDS[scrambleIndex];
+      shuffledLetters = shuffleArray(entry.word.split(''));
+      // Make sure it's actually scrambled
+      while (shuffledLetters.join('') === entry.word) shuffledLetters = shuffleArray(entry.word.split(''));
+      selectedIndices = [];
+
+      card.innerHTML = `
+        <div class="scramble-category">${entry.category}</div>
+        <div class="scramble-clue">${entry.clue}</div>
+        <div class="scramble-answer-row" id="scramble-answer-row">
+          ${Array(entry.word.length).fill('<div class="scramble-answer-slot"></div>').join('')}
+        </div>
+        <div class="scramble-letters" id="scramble-letters">
+          ${shuffledLetters.map((l, i) => `<div class="scramble-letter" data-i="${i}">${l}</div>`).join('')}
+        </div>
+        <div class="scramble-controls">
+          <button class="scramble-btn scramble-btn-check" id="scramble-check">Check</button>
+          <button class="scramble-btn scramble-btn-clear" id="scramble-clear">Clear</button>
+        </div>
+        <div class="scramble-feedback" id="scramble-feedback"></div>
+        <div class="scramble-counter">${scrambleIndex + 1} of ${SCRAMBLE_WORDS.length}</div>
+        <button class="scramble-next-btn" id="scramble-next">Next Word →</button>
+      `;
+
+      card.querySelectorAll('.scramble-letter').forEach(tile => {
+        tile.addEventListener('click', () => {
+          const i = parseInt(tile.dataset.i);
+          if (tile.classList.contains('used')) {
+            // Remove from answer
+            const pos = selectedIndices.indexOf(i);
+            if (pos !== -1) {
+              selectedIndices.splice(pos, 1);
+              tile.classList.remove('used');
+              updateAnswerSlots();
+            }
+            return;
+          }
+          if (selectedIndices.length >= entry.word.length) return;
+          selectedIndices.push(i);
+          tile.classList.add('used');
+          updateAnswerSlots();
+        });
+      });
+
+      function updateAnswerSlots() {
+        const slots = card.querySelectorAll('.scramble-answer-slot');
+        slots.forEach((slot, i) => {
+          if (i < selectedIndices.length) {
+            slot.textContent = shuffledLetters[selectedIndices[i]];
+          } else {
+            slot.textContent = '';
+          }
+        });
+      }
+
+      card.querySelector('#scramble-clear').addEventListener('click', () => {
+        selectedIndices = [];
+        card.querySelectorAll('.scramble-letter').forEach(t => t.classList.remove('used'));
+        card.querySelectorAll('.scramble-answer-slot').forEach(s => s.textContent = '');
+        document.getElementById('scramble-feedback').textContent = '';
+        document.getElementById('scramble-feedback').className = 'scramble-feedback';
+      });
+
+      card.querySelector('#scramble-check').addEventListener('click', () => {
+        if (selectedIndices.length < entry.word.length) {
+          document.getElementById('scramble-feedback').textContent = 'Fill in all the letters first!';
+          document.getElementById('scramble-feedback').className = 'scramble-feedback wrong';
+          return;
+        }
+        const attempt = selectedIndices.map(i => shuffledLetters[i]).join('');
+        const fb = document.getElementById('scramble-feedback');
+        if (attempt === entry.word) {
+          fb.textContent = '✓ Correct! ' + ['Beautiful! 🌸', 'Bravo! 🎉', 'Opa! 🥂', 'Magnifico! 💛', 'Spot on! 🌟'][Math.floor(Math.random()*5)];
+          fb.className = 'scramble-feedback';
+          scrambleCorrect++;
+          document.getElementById('scramble-next').classList.add('visible');
+          card.querySelector('#scramble-check').disabled = true;
+          card.querySelector('#scramble-clear').disabled = true;
+        } else {
+          fb.textContent = '✗ Not quite — try again!';
+          fb.className = 'scramble-feedback wrong';
+          selectedIndices = [];
+          card.querySelectorAll('.scramble-letter').forEach(t => t.classList.remove('used'));
+          card.querySelectorAll('.scramble-answer-slot').forEach(s => s.textContent = '');
+        }
+      });
+
+      card.querySelector('#scramble-next').addEventListener('click', () => {
+        scrambleIndex++;
+        renderScramble();
+      });
+    }
+
+    renderScramble();
+
+    // =========================================================
+    //  RING TOSS — CANVAS GAME
+    // =========================================================
+    const rtCanvas = document.getElementById('ringtoss-canvas');
+    const rtCtx = rtCanvas.getContext('2d');
+    const W = 700, H = 420;
+    const TOTAL_SHOTS  = 10;
+
+    // Layout constants
+    const FLOOR_Y    = 330;
+    const CATAPULT_X = 115;
+    const CATAPULT_Y = FLOOR_Y - 10;
+    const PIVOT_X    = CATAPULT_X + 10;
+    const PIVOT_Y    = CATAPULT_Y - 52;
+    const PEG_X      = 540;
+    const PEG_TIP_Y  = 200;      // top of peg (target)
+    const GRAVITY    = 0.28;
+    const RING_SPEED = 14;
+
+    // Wave parameters — arrow oscillates ±range degrees around midAngle
+    const MID_ANGLE  = -23; // degrees from horizontal (pointing roughly at peg)
+    const BASE_RANGE = 38;
+    const ARROW_SPEED  = 1.6;   // constant — no difficulty scaling
+    const ARROW_RANGE  = BASE_RANGE;
+
+    let rtState   = 'idle';  // idle | aiming | flying | result | gameover
+    let rtShots   = 0;   // attempts made
+    let rtScore   = 0;   // hits
+    let rtArrow   = MID_ANGLE;
+    let rtArrowDir = 1;
+    let rtRAF     = null;
+    let rtLaunched = false;
+    let rtRingX, rtRingY, rtVX, rtVY;
+    let rtResultMsg = '';
+    let rtResultColor = '#fff';
+    let rtResultTimer = 0;
+    let rtCatapultAnim  = 0;
+    let rtParticles  = [];
+    let rtRaccoonBlink = 0;
+    let rtFrame = 0;
+    let rtActive = false;     // loop running
+
+    function stopRingToss() {
+      rtActive = false;
+      if (rtRAF) { cancelAnimationFrame(rtRAF); rtRAF = null; }
+    }
+
+    function startRingToss() {
+      stopRingToss();
+      rtActive = true;
+      rtShots = 0; rtScore = 0;
+      resetShot();
+      document.getElementById('rt-round').textContent = rtShots;
+      document.getElementById('rt-score').textContent = rtScore;
+      rtLoop();
+    }
+
+    function resetShot() {
+      rtState         = 'aiming';
+      rtArrow         = MID_ANGLE;
+      rtArrowDir      = 1;
+      rtLaunched      = false;
+      rtRingX = rtRingY = rtVX = rtVY = 0;
+      rtCatapultAnim  = 0;
+      rtResultTimer   = 0;
+      rtParticles     = [];
+      const btn = document.getElementById('ringtoss-launch-btn');
+      if (btn) { btn.disabled = false; }
+    }
+
+    function doLaunch() {
+      if (rtState !== 'aiming') return;
+      rtState = 'flying';
+      rtLaunched = true;
+      rtCatapultAnim = 0;
+      // Ring starts at end of catapult arm
+      const armLen = 62;
+      const rad = (rtArrow * Math.PI) / 180;
+      rtRingX = PIVOT_X + Math.cos(rad) * armLen;
+      rtRingY = PIVOT_Y + Math.sin(rad) * armLen;
+      rtVX    = Math.cos(rad) * RING_SPEED;
+      rtVY    = Math.sin(rad) * RING_SPEED;
+      const btn = document.getElementById('ringtoss-launch-btn');
+      if (btn) btn.disabled = true;
+    }
+
+    document.getElementById('ringtoss-canvas').addEventListener('click', () => {
+      if (rtState === 'aiming') doLaunch();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' && document.getElementById('panel-ringtoss').classList.contains('active')) {
+        e.preventDefault();
+        if (rtState === 'aiming') doLaunch();
+      }
+    });
+    document.getElementById('ringtoss-launch-btn').addEventListener('click', doLaunch);
+
+    function spawnParticles(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const sp = 2 + Math.random() * 4;
+        rtParticles.push({ x, y, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 2,
+          life: 1, color, size: 3 + Math.random()*5 });
+      }
+    }
+
+    function rtLoop() {
+      if (!rtActive) return;
+      rtFrame++;
+      rtRaccoonBlink = Math.sin(rtFrame * 0.05) > 0.95 ? 1 : 0;
+
+      // Update
+      if (rtState === 'aiming') {
+        // Oscillate arrow at constant speed
+        rtArrow += rtArrowDir * ARROW_SPEED;
+        const lo = MID_ANGLE - ARROW_RANGE, hi = MID_ANGLE + ARROW_RANGE;
+        if (rtArrow > hi)  { rtArrow = hi;  rtArrowDir = -1; }
+        if (rtArrow < lo)  { rtArrow = lo;  rtArrowDir =  1; }
+      }
+      if (rtState === 'flying') {
+        // Catapult arm springs up
+        rtCatapultAnim = Math.min(1, rtCatapultAnim + 0.07);
+        // Physics
+        rtRingX += rtVX;
+        rtRingY += rtVY;
+        rtVY    += GRAVITY;
+        // Check hit
+        const dx = rtRingX - PEG_X, dy = rtRingY - PEG_TIP_Y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 22) {
+          // HIT
+          let msg = '';
+          if (dist < 8)       { msg = '💍 PERFECT!';   rtResultColor = '#ffd700'; }
+          else if (dist < 15) { msg = '🎯 Nice hit!';  rtResultColor = '#c9a96e'; }
+          else                { msg = '👍 Close one!'; rtResultColor = '#a8d8a8'; }
+          rtScore++; rtResultMsg = msg;
+          spawnParticles(PEG_X, PEG_TIP_Y, '#ffd700', 28);
+          advanceShot(true);
+        } else if (rtRingY > H + 40 || rtRingX > W + 40) {
+          // MISS
+          rtResultMsg = '💨 Missed!'; rtResultColor = '#c07f7f';
+          advanceShot(false);
+        }
+      }
+      if (rtState === 'result') {
+        rtResultTimer++;
+        rtParticles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=0.018; });
+        rtParticles = rtParticles.filter(p => p.life > 0);
+        if (rtResultTimer > 70) {
+          if (rtShots >= TOTAL_SHOTS) { rtState = 'gameover'; }
+          else { resetShot(); }
+        }
+      }
+      if (rtState === 'gameover') {
+        rtParticles.forEach(p => { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life-=0.012; });
+        rtParticles = rtParticles.filter(p => p.life > 0);
+      }
+
+      // Draw
+      drawRT();
+      rtRAF = requestAnimationFrame(rtLoop);
+    }
+
+    function advanceShot(wasHit) {
+      rtState = 'result';
+      rtResultTimer = 0;
+      rtShots++;
+      document.getElementById('rt-score').textContent = rtScore;
+      document.getElementById('rt-round').textContent = rtShots;
+    }
+
+    // ---- DRAWING ----
+    function drawRT() {
+      const c = rtCtx;
+      c.clearRect(0, 0, W, H);
+
+      drawRTBackground(c);
+      drawRTScene(c);
+      drawRTCatapult(c);
+      drawRTRaccoon(c);
+      if (rtState === 'aiming') drawRTArrow(c);
+      if (rtLaunched && (rtState === 'flying' || rtState === 'result')) drawRTRing(c);
+      drawRTParticles(c);
+      drawRTHUD(c);
+    }
+
+    function drawRTBackground(c) {
+      // Sky gradient
+      const sky = c.createLinearGradient(0, 0, 0, FLOOR_Y);
+      sky.addColorStop(0,    '#4a90c8');
+      sky.addColorStop(0.45, '#78bae8');
+      sky.addColorStop(0.75, '#b8ddf5');
+      sky.addColorStop(1,    '#e8f4fd');
+      c.fillStyle = sky;
+      c.fillRect(0, 0, W, FLOOR_Y);
+
+      // Sun glow
+      const sun = c.createRadialGradient(590, 55, 4, 590, 55, 80);
+      sun.addColorStop(0,   'rgba(255,240,180,0.9)');
+      sun.addColorStop(0.4, 'rgba(255,220,100,0.3)');
+      sun.addColorStop(1,   'rgba(255,200,60,0)');
+      c.fillStyle = sun;
+      c.beginPath(); c.arc(590, 55, 80, 0, Math.PI*2); c.fill();
+      c.fillStyle = '#fffde0';
+      c.beginPath(); c.arc(590, 55, 18, 0, Math.PI*2); c.fill();
+
+      // Aegean sea
+      const sea = c.createLinearGradient(0, FLOOR_Y - 60, 0, H);
+      sea.addColorStop(0,   '#2a7fc0');
+      sea.addColorStop(0.3, '#1a6aaa');
+      sea.addColorStop(1,   '#0e4a80');
+      c.fillStyle = sea;
+      c.fillRect(0, FLOOR_Y - 60, W, H - (FLOOR_Y - 60));
+
+      // Sea shimmer lines
+      c.strokeStyle = 'rgba(255,255,255,0.18)';
+      c.lineWidth = 1.5;
+      for (let i = 0; i < 7; i++) {
+        const y = FLOOR_Y - 45 + i * 18 + Math.sin(rtFrame * 0.04 + i) * 3;
+        const x0 = (i % 2 === 0) ? 20 : 60;
+        c.beginPath(); c.moveTo(x0, y);
+        c.bezierCurveTo(x0+80, y-4, x0+160, y+4, x0+240, y);
+        c.stroke();
+      }
+
+      // Sandy beach foreground
+      const sand = c.createLinearGradient(0, FLOOR_Y - 20, 0, H);
+      sand.addColorStop(0,   '#e8d09a');
+      sand.addColorStop(0.4, '#d4b870');
+      sand.addColorStop(1,   '#c8a855');
+      c.fillStyle = sand;
+      c.beginPath();
+      c.moveTo(0, FLOOR_Y - 10);
+      c.bezierCurveTo(180, FLOOR_Y - 25, 400, FLOOR_Y - 5, W, FLOOR_Y - 15);
+      c.lineTo(W, H); c.lineTo(0, H); c.closePath(); c.fill();
+    }
+
+    function drawRTScene(c) {
+      // ---- White Greek buildings in background ----
+      const bldgs = [
+        { x:200, y:160, w:60, h:90 },
+        { x:254, y:175, w:45, h:75 },
+        { x:293, y:155, w:55, h:95 },
+        { x:342, y:168, w:50, h:82 },
+        { x:386, y:172, w:42, h:78 },
+      ];
+      bldgs.forEach(b => {
+        // Building body
+        c.fillStyle = '#f0ede8';
+        c.fillRect(b.x, b.y, b.w, b.h);
+        // Flat roof with slight overhang
+        c.fillStyle = '#e2ddd8';
+        c.fillRect(b.x - 3, b.y - 5, b.w + 6, 8);
+        // Blue window
+        c.fillStyle = '#4a90c8';
+        c.fillRect(b.x + b.w*0.2, b.y + 14, b.w*0.28, b.w*0.28);
+        c.fillRect(b.x + b.w*0.55, b.y + 14, b.w*0.28, b.w*0.28);
+        if (b.h > 80) {
+          c.fillRect(b.x + b.w*0.35, b.y + 46, b.w*0.3, b.h*0.35);
+          // Blue door frame
+          c.strokeStyle = '#2a6aaa'; c.lineWidth = 1.5;
+          c.strokeRect(b.x + b.w*0.35, b.y + 46, b.w*0.3, b.h*0.35);
+        }
+        // Shadow
+        c.fillStyle = 'rgba(0,0,0,0.06)';
+        c.fillRect(b.x + b.w, b.y + 5, 5, b.h - 5);
+      });
+
+      // ---- Taverna on right ----
+      c.fillStyle = '#f5f0e8';
+      c.fillRect(440, 195, 110, 95);
+      // Terracotta roof
+      c.fillStyle = '#c86432';
+      c.beginPath(); c.moveTo(435, 198); c.lineTo(495, 168); c.lineTo(555, 198); c.closePath(); c.fill();
+      c.fillStyle = '#b85a28';
+      c.beginPath(); c.moveTo(438, 198); c.lineTo(495, 171); c.lineTo(552, 198); c.closePath();
+      c.lineWidth=1; c.stroke();
+      // Taverna sign
+      c.fillStyle = '#2a5a2a';
+      c.fillRect(452, 197, 82, 14);
+      c.fillStyle = '#fff'; c.font = 'bold 8px Montserrat, sans-serif';
+      c.textAlign = 'center'; c.fillText('TAVERNA', 493, 208);
+      // Windows & door
+      c.fillStyle = '#4a90c8';
+      c.fillRect(452, 218, 24, 20); c.fillRect(516, 218, 24, 20);
+      c.fillStyle = '#7a5230';
+      c.fillRect(479, 228, 22, 62);
+      // Awning stripes
+      for (let i = 0; i < 5; i++) {
+        c.fillStyle = i%2===0 ? '#e85a2a' : '#fff';
+        c.fillRect(440 + i*22, 212, 22, 8);
+      }
+      // String lights
+      c.strokeStyle = 'rgba(255,240,100,0.7)'; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(420, 220);
+      for (let i=0; i<8; i++) c.lineTo(420+i*22, 220 + Math.sin(i*0.9)*6);
+      c.stroke();
+      c.fillStyle = 'rgba(255,240,80,0.85)';
+      for (let i=0; i<8; i++) {
+        c.beginPath(); c.arc(420+i*22, 220+Math.sin(i*0.9)*6, 3, 0, Math.PI*2); c.fill();
+      }
+
+      // ---- Olive tree (left mid) ----
+      c.fillStyle = '#5a3a1a'; c.lineWidth=1;
+      c.fillRect(178, 248, 8, 52);
+      c.fillRect(182, 256, 6, 38);
+      // Trunk gnarls
+      c.strokeStyle='#4a2a0a'; c.lineWidth=2;
+      c.beginPath(); c.moveTo(182,295); c.bezierCurveTo(172,275,192,265,182,248); c.stroke();
+      // Canopy
+      for (let [ox,oy,r] of [[182,242,26],[168,252,20],[196,250,18],[182,260,22],[172,238,16],[196,238,15]]) {
+        c.fillStyle = `rgba(${60+Math.random()*20},${100+Math.random()*30},${40+Math.random()*20},0.88)`;
+        c.beginPath(); c.ellipse(ox,oy,r,r*0.7,0,0,Math.PI*2); c.fill();
+      }
+      // Silver-green shimmer
+      c.fillStyle = 'rgba(180,200,140,0.25)';
+      c.beginPath(); c.ellipse(182,244,28,18,0,0,Math.PI*2); c.fill();
+
+      // ---- Greek column (target) ----
+      const cx = PEG_X, base = FLOOR_Y - 5;
+      // Base (stylobate)
+      c.fillStyle = '#e8dcc8';
+      c.fillRect(cx-24, base-8, 48, 8);
+      c.fillStyle = '#d8ccb4';
+      c.fillRect(cx-20, base-12, 40, 5);
+      // Shaft with flutes
+      c.fillStyle = '#f0e8d8';
+      c.fillRect(cx-14, PEG_TIP_Y + 38, 28, base - 12 - (PEG_TIP_Y + 38));
+      c.fillStyle = 'rgba(0,0,0,0.06)';
+      for (let i=0; i<5; i++) c.fillRect(cx-14+i*5.5, PEG_TIP_Y + 38, 2, base - 12 - (PEG_TIP_Y + 38));
+      // Entasis (slight bulge)
+      c.fillStyle = 'rgba(255,255,255,0.15)';
+      const shaftH = base - 12 - (PEG_TIP_Y + 38);
+      c.beginPath(); c.ellipse(cx, PEG_TIP_Y + 38 + shaftH/2, 16, shaftH/2, 0, 0, Math.PI*2); c.fill();
+      // Capital (Doric)
+      c.fillStyle = '#e8dcc8';
+      c.fillRect(cx-18, PEG_TIP_Y + 20, 36, 9);
+      c.fillRect(cx-22, PEG_TIP_Y + 15, 44, 6);
+      c.fillRect(cx-26, PEG_TIP_Y + 10, 52, 6);
+      // Peg (target post)
+      c.fillStyle = '#8a6832';
+      c.fillRect(cx-3, PEG_TIP_Y, 6, 20);
+      // Peg tip glow
+      const glow = c.createRadialGradient(cx, PEG_TIP_Y, 1, cx, PEG_TIP_Y, 18);
+      glow.addColorStop(0,   'rgba(255,220,80,0.6)');
+      glow.addColorStop(1,   'rgba(255,220,80,0)');
+      c.fillStyle = glow;
+      c.beginPath(); c.arc(cx, PEG_TIP_Y, 18, 0, Math.PI*2); c.fill();
+      // Peg tip cap
+      c.fillStyle = '#ffd700';
+      c.beginPath(); c.arc(cx, PEG_TIP_Y, 5, 0, Math.PI*2); c.fill();
+    }
+
+    function drawRTCatapult(c) {
+      // Arm angle: at rest = pointing ~45deg down-right; after launch = pointing up
+      const armRestAngle  = 50  * Math.PI / 180;  // pointing down-right
+      const armLaunchAngle = -110 * Math.PI / 180; // pointing up-left
+      const t = rtState === 'aiming' ? 0 : Math.min(rtCatapultAnim, 1);
+      const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+      const armAngle = armRestAngle + (armLaunchAngle - armRestAngle) * ease;
+
+      const px = PIVOT_X, py = PIVOT_Y;
+
+      // Frame legs
+      c.strokeStyle = '#8a5a28'; c.lineWidth = 7; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(px-28, CATAPULT_Y); c.lineTo(px, py); c.stroke();
+      c.beginPath(); c.moveTo(px+24, CATAPULT_Y); c.lineTo(px, py); c.stroke();
+      // Cross brace
+      c.lineWidth = 4;
+      c.beginPath(); c.moveTo(px-20, CATAPULT_Y-20); c.lineTo(px+16, CATAPULT_Y-26); c.stroke();
+      // Wheels
+      c.fillStyle = '#6a3a18'; c.strokeStyle = '#4a2a08'; c.lineWidth = 2;
+      [-32, 28].forEach(ox => {
+        c.beginPath(); c.arc(px+ox, CATAPULT_Y+2, 9, 0, Math.PI*2);
+        c.fill(); c.stroke();
+        c.fillStyle = '#8a5a28';
+        c.beginPath(); c.arc(px+ox, CATAPULT_Y+2, 4, 0, Math.PI*2); c.fill();
+        c.fillStyle = '#6a3a18';
+      });
+
+      // Pivot pin
+      c.fillStyle = '#4a2808';
+      c.beginPath(); c.arc(px, py, 5, 0, Math.PI*2); c.fill();
+
+      // Arm (long beam)
+      const armLen = 62;
+      c.save();
+      c.translate(px, py);
+      c.rotate(armAngle);
+      c.strokeStyle = '#a06828'; c.lineWidth = 10; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(-32, 0); c.lineTo(armLen, 0); c.stroke();
+      c.lineWidth = 4; c.strokeStyle = '#c08840';
+      c.beginPath(); c.moveTo(-32, 0); c.lineTo(armLen, 0); c.stroke();
+      // Cup at end
+      if (rtState === 'aiming') {
+        c.fillStyle = '#8a5020';
+        c.beginPath(); c.arc(armLen, 0, 7, 0, Math.PI*2); c.fill();
+        c.strokeStyle = '#6a3a10'; c.lineWidth = 2;
+        c.beginPath(); c.arc(armLen, 0, 7, 0, Math.PI); c.stroke();
+        // Ring in cup
+        c.strokeStyle = '#ffd700'; c.lineWidth = 3.5;
+        c.beginPath(); c.arc(armLen, -2, 6, 0, Math.PI*2); c.stroke();
+      }
+      // Counterweight
+      c.fillStyle = '#5a3010';
+      c.beginPath(); c.arc(-32, 0, 12, 0, Math.PI*2); c.fill();
+      c.strokeStyle = '#8a5028'; c.lineWidth = 2;
+      c.beginPath(); c.arc(-32, 0, 12, 0, Math.PI*2); c.stroke();
+      c.restore();
+    }
+
+    function drawRTRaccoon(c) {
+      // Draw raccoon sitting to left of catapult
+      const rx = CATAPULT_X - 32, ry = CATAPULT_Y - 2;
+      c.save();
+      c.translate(rx, ry);
+
+      // Tail (striped, curled up behind)
+      for (let i = 0; i < 5; i++) {
+        c.strokeStyle = i%2===0 ? '#707070' : '#202020';
+        c.lineWidth = 7 - i*0.4;
+        c.beginPath();
+        c.arc(-18 - i*2, -12 - i*3, 14 + i*2, 0.2, Math.PI * 1.1);
+        c.stroke();
+      }
+
+      // Body
+      c.fillStyle = '#888';
+      c.beginPath(); c.ellipse(0, -22, 16, 20, 0, 0, Math.PI*2); c.fill();
+      c.fillStyle = '#aaa';
+      c.beginPath(); c.ellipse(0, -18, 11, 14, 0, 0, Math.PI*2); c.fill();
+
+      // Legs / feet
+      c.fillStyle = '#666';
+      c.beginPath(); c.ellipse(-10, -4, 7, 5, 0.3, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.ellipse(10,  -4, 7, 5, -0.3, 0, Math.PI*2); c.fill();
+
+      // Arms reaching forward (holding catapult handle gesture)
+      c.strokeStyle = '#888'; c.lineWidth = 5; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(12, -22); c.quadraticCurveTo(24, -18, 28, -12); c.stroke();
+      c.beginPath(); c.moveTo(14, -24); c.quadraticCurveTo(24, -26, 26, -30); c.stroke();
+
+      // Head
+      c.fillStyle = '#909090';
+      c.beginPath(); c.ellipse(0, -40, 13, 12, 0, 0, Math.PI*2); c.fill();
+
+      // Face mask
+      c.fillStyle = '#222';
+      c.beginPath(); c.ellipse(-4, -40, 5, 4, -0.2, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.ellipse(4, -40, 5, 4, 0.2, 0, Math.PI*2); c.fill();
+
+      // Eyes
+      c.fillStyle = '#fff';
+      c.beginPath(); c.arc(-4, -41, 3.5, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.arc(4, -41, 3.5, 0, Math.PI*2); c.fill();
+
+      if (rtRaccoonBlink) {
+        // Blink
+        c.fillStyle = '#222';
+        c.fillRect(-7.5, -42.5, 7, 3);
+        c.fillRect(0.5, -42.5, 7, 3);
+      } else {
+        // Pupils — look toward catapult
+        c.fillStyle = '#111';
+        c.beginPath(); c.arc(-3, -41, 1.8, 0, Math.PI*2); c.fill();
+        c.beginPath(); c.arc(5, -41, 1.8, 0, Math.PI*2); c.fill();
+        // Shines
+        c.fillStyle = '#fff';
+        c.beginPath(); c.arc(-2, -42, 0.7, 0, Math.PI*2); c.fill();
+        c.beginPath(); c.arc(5.8, -42, 0.7, 0, Math.PI*2); c.fill();
+      }
+
+      // Ears
+      c.fillStyle = '#888';
+      c.beginPath(); c.ellipse(-9, -50, 5, 6, -0.3, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.ellipse(9, -50, 5, 6, 0.3, 0, Math.PI*2); c.fill();
+      c.fillStyle = '#e89898';
+      c.beginPath(); c.ellipse(-9, -50, 3, 4, -0.3, 0, Math.PI*2); c.fill();
+      c.beginPath(); c.ellipse(9, -50, 3, 4, 0.3, 0, Math.PI*2); c.fill();
+
+      // Nose
+      c.fillStyle = '#c87070';
+      c.beginPath(); c.ellipse(0, -37, 3, 2, 0, 0, Math.PI*2); c.fill();
+
+      // Mouth (excited smile when aiming)
+      c.strokeStyle = '#444'; c.lineWidth = 1.5;
+      c.beginPath(); c.arc(0, -36, 4, 0.2, Math.PI - 0.2); c.stroke();
+
+      // Hat (tiny wedding hat 🎩)
+      c.fillStyle = '#222';
+      c.fillRect(-8, -58, 16, 9);
+      c.fillRect(-11, -50, 22, 3);
+      c.fillStyle = '#c9a96e';
+      c.fillRect(-8, -55, 16, 2);
+
+      c.restore();
+    }
+
+    function drawRTArrow(c) {
+      const px = PIVOT_X + 10, py = PIVOT_Y;
+      const rad = rtArrow * Math.PI / 180;
+      const len = 85;
+      const ex = px + Math.cos(rad) * len;
+      const ey = py + Math.sin(rad) * len;
+
+      // Glow
+      c.shadowColor = '#ffd700'; c.shadowBlur = 14;
+
+      // Arrow shaft
+      c.strokeStyle = '#ffd700'; c.lineWidth = 4; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(px, py); c.lineTo(ex, ey); c.stroke();
+
+      // Arrowhead
+      const headLen = 16, headAngle = 0.42;
+      c.fillStyle = '#ffd700';
+      c.beginPath();
+      c.moveTo(ex, ey);
+      c.lineTo(ex - headLen*Math.cos(rad-headAngle), ey - headLen*Math.sin(rad-headAngle));
+      c.lineTo(ex - headLen*Math.cos(rad+headAngle), ey - headLen*Math.sin(rad+headAngle));
+      c.closePath(); c.fill();
+
+      // Feather / base decoration
+      c.strokeStyle = 'rgba(255,215,0,0.4)'; c.lineWidth = 2;
+      c.beginPath(); c.moveTo(px, py);
+      c.lineTo(px - Math.cos(rad)*10, py - Math.sin(rad)*10);
+      c.stroke();
+
+      c.shadowBlur = 0;
+    }
+
+    function drawRTRing(c) {
+      // 3D-ish ring
+      c.save();
+      c.shadowColor = 'rgba(255,215,0,0.6)'; c.shadowBlur = 10;
+      c.strokeStyle = '#ffd700'; c.lineWidth = 5;
+      c.beginPath(); c.arc(rtRingX, rtRingY, 9, 0, Math.PI*2); c.stroke();
+      c.strokeStyle = 'rgba(255,255,255,0.6)'; c.lineWidth = 2;
+      c.beginPath(); c.arc(rtRingX - 2, rtRingY - 2, 9, Math.PI*1.1, Math.PI*1.6); c.stroke();
+      c.shadowBlur = 0;
+      c.restore();
+    }
+
+    function drawRTParticles(c) {
+      rtParticles.forEach(p => {
+        c.globalAlpha = p.life;
+        c.fillStyle = p.color;
+        c.beginPath(); c.arc(p.x, p.y, p.size, 0, Math.PI*2); c.fill();
+      });
+      c.globalAlpha = 1;
+    }
+
+    function drawRTHUD(c) {
+      // aim bar uses constant range
+      if (rtState === 'aiming') {
+        const bw = 160, bh = 10, bx = W/2 - bw/2, by = 14;
+        c.fillStyle = 'rgba(0,0,0,0.4)';
+        c.beginPath(); c.roundRect(bx-2, by-2, bw+4, bh+4, 3); c.fill();
+        const lo = MID_ANGLE - ARROW_RANGE, hi = MID_ANGLE + ARROW_RANGE;
+        const norm = (rtArrow - lo) / (hi - lo);
+        const barColor = norm > 0.35 && norm < 0.65 ? '#50e050' : norm > 0.2 && norm < 0.8 ? '#f0b030' : '#e03030';
+        c.fillStyle = barColor;
+        c.beginPath(); c.roundRect(bx, by, bw * norm, bh, 2); c.fill();
+        c.fillStyle = '#fff';
+        c.fillRect(bx + bw/2 - 1, by - 3, 2, bh + 6);
+        c.fillStyle = '#fff'; c.font = '600 10px Montserrat, sans-serif';
+        c.textAlign = 'center'; c.fillText('AIM', W/2, by + bh + 14);
+      }
+
+      // Result flash
+      if (rtState === 'result' || rtState === 'gameover') {
+        const alpha = rtState === 'gameover' ? 1 : Math.min(1, (70 - rtResultTimer) / 12);
+        c.globalAlpha = Math.max(0, alpha);
+        // Banner
+        c.fillStyle = 'rgba(0,0,0,0.65)';
+        c.beginPath(); c.roundRect(W/2-180, H/2-42, 360, 90, 8); c.fill();
+        c.globalAlpha = 1;
+        const headline = rtState === 'gameover' ? '🎉 Game Over!' : rtResultMsg;
+        const headColor = rtState === 'gameover' ? '#ffd700' : rtResultColor;
+        c.fillStyle = headColor;
+        c.font = 'bold 22px Playfair Display, serif';
+        c.textAlign = 'center';
+        c.fillText(headline, W/2, H/2);
+        if (rtState === 'result') {
+          c.fillStyle = 'rgba(255,255,255,0.55)'; c.font = '600 11px Montserrat, sans-serif';
+          c.fillText('Shot ' + rtShots + ' of ' + TOTAL_SHOTS, W/2, H/2 + 22);
+        }
+        if (rtState === 'gameover') {
+          c.fillStyle = '#c9a96e'; c.font = '600 14px Montserrat, sans-serif';
+          c.fillText(rtScore + ' hit' + (rtScore !== 1 ? 's' : '') + ' out of ' + TOTAL_SHOTS + ' shots', W/2, H/2 + 24);
+          c.fillStyle = 'rgba(255,255,255,0.5)'; c.font = '11px Montserrat, sans-serif';
+          c.fillText('— Click the tab to play again —', W/2, H/2 + 44);
+        }
+      }
+      c.textAlign = 'left';
+    }
+
+    // ---- expose restart ----
+    // Re-init when tab activated (handled in startRingToss)
+
+  })();
+  </script>
+</body>
+</html>
